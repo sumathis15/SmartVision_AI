@@ -1,0 +1,70 @@
+{
+  "placeholder": true,
+  "class_names": [
+    "person", "bicycle", "car", "motorcycle", "airplane", "bus", "truck",
+    "traffic light", "stop sign", "bench", "bird", "cat", "dog", "horse",
+    "cow", "elephant", "bottle", "cup", "bowl", "pizza", "cake", "chair",
+    "couch", "potted plant", "bed"
+  ],
+  "dataset": {
+    "train": null,
+    "val": null,
+    "test": null
+  },
+  "dataset_decisions": {},
+  "classification": {
+    "VGG16": {
+      "accuracy": null,
+      "precision_macro": null,
+      "recall_macro": null,
+      "f1_macro": null,
+      "top5_accuracy": null,
+      "inference_ms": null,
+      "model_size_mb": null,
+      "per_class": {}
+    },
+    "ResNet50": {
+      "accuracy": null,
+      "precision_macro": null,
+      "recall_macro": null,
+      "f1_macro": null,
+      "top5_accuracy": null,
+      "inference_ms": null,
+      "model_size_mb": null,
+      "per_class": {}
+    },
+    "MobileNetV2": {
+      "accuracy": null,
+      "precision_macro": null,
+      "recall_macro": null,
+      "f1_macro": null,
+      "top5_accuracy": null,
+      "inference_ms": null,
+      "model_size_mb": null,
+      "per_class": {}
+    },
+    "EfficientNetB0": {
+      "accuracy": null,
+      "precision_macro": null,
+      "recall_macro": null,
+      "f1_macro": null,
+      "top5_accuracy": null,
+      "inference_ms": null,
+      "model_size_mb": null,
+      "per_class": {}
+    }
+  },
+  "best_classification_model": null,
+  "yolo": {
+    "model": "YOLOv8s",
+    "map50": null,
+    "map50_95": null,
+    "precision": null,
+    "recall": null,
+    "fps": null,
+    "test": {},
+    "per_class_ap50": {},
+    "meets_map50_floor": null
+  },
+  "quantization": {}
+}
