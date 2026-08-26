@@ -26,6 +26,8 @@ with **YOLOv8 multi-object detection**, then serves both through this Streamlit 
 
 The dataset is streamed from Hugging Face (`detection-datasets/coco`); class IDs, bbox format,
 and crop-area cutoffs are **inspected from the actual stream** rather than assumed.
+
+Developed by [Sumathi S](https://www.linkedin.com/in/sumathisaravanan)
     """
 )
 
@@ -65,17 +67,6 @@ st.markdown(
     """
 Python, TensorFlow / Keras, Ultralytics YOLOv8, OpenCV, Pillow, pandas, scikit-learn,
 Streamlit, Hugging Face Datasets / Spaces.
-    """
-)
-
-st.subheader("Developer")
-st.markdown(
-    """
-**Name:** `[Your Name]`  
-**Program:** `[Your program / institution]`  
-**GitHub:** `[your-github-username]`
-
-Replace the placeholders above before the live evaluation.
     """
 )
 

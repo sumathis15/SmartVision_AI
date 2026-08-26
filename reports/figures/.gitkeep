@@ -1,3 +1,0 @@
-# Keep this folder in git. Colab copies PNGs here:
-# eda_*.png, cm_*.png, model_comparison.png, accuracy_speed_tradeoff.png,
-# yolo_val_samples.png, yolo_failures.png, pipeline_samples.png, *_history.png

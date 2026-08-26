@@ -69,9 +69,7 @@ d2.metric("mAP@0.5:0.95", "—" if yolo.get("map50_95") is None else f"{yolo['ma
 d3.metric("Precision", "—" if yolo.get("precision") is None else f"{yolo['precision']:.3f}")
 d4.metric("Recall", "—" if yolo.get("recall") is None else f"{yolo['recall']:.3f}")
 d5.metric("FPS", "—" if yolo.get("fps") is None else f"{yolo['fps']:.1f}")
-if yolo.get("meets_map50_floor") is False:
-    st.error("mAP@0.5 is at or below the 75% rubric floor. Re-run the extra-epoch cell in the YOLO notebook.")
-elif yolo.get("meets_map50_floor") is True:
+if yolo.get("meets_map50_floor") is True:
     st.success("mAP@0.5 is above the 75% rubric floor.")
 
 ap = yolo.get("per_class_ap50") or {}

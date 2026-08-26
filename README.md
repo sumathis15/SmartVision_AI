@@ -14,6 +14,8 @@ pinned: false
 
 25-class computer vision system on a curated COCO 2017 subset: four ImageNet CNNs (VGG16, ResNet50, MobileNetV2, EfficientNetB0) plus YOLOv8 detection, served as a Streamlit app.
 
+Developed by [Sumathi S](https://www.linkedin.com/in/sumathisaravanan)
+
 Live Space: *add the Hugging Face URL after you create the Space.*
 
 ---
@@ -122,7 +124,7 @@ reports/dataset_metadata.json    # optional
 reports/figures/*.png
 ```
 
-Then the Streamlit pages use **your** numbers, not placeholders.
+Weights and `reports/metrics.json` from this training run are already in the repo (Git LFS). The Streamlit pages read those files.
 
 ---
 
@@ -178,6 +180,16 @@ git lfs track "*.keras" "*.pt" "*.tflite" "*.onnx"
 
 ---
 
-## Developer
+## Results (this training run)
 
-Replace on the About page: `[Your Name]`, `[Your program / institution]`, `[your-github-username]`.
+| Model | Test accuracy | Macro F1 | Top-5 | Inference ms | Size |
+|---|---|---|---|---|---|
+| VGG16 | 62.4% | 0.623 | 87.7% | 14.0 | 240 MB |
+| **ResNet50 (best CNN)** | **76.5%** | **0.764** | **93.6%** | 28.6 | 173 MB |
+| MobileNetV2 | 66.4% | 0.662 | 91.7% | 30.9 | 25 MB |
+| EfficientNetB0 | 66.1% | 0.657 | 89.1% | 99.2 | 32 MB |
+| YOLOv8s (val) | mAP@0.5 **56.4%** | mAP@0.5:0.95 39.2% | — | 46 FPS | 22 MB |
+
+Full per-class tables: [`reports/metrics.json`](reports/metrics.json).
+
+Developed by [Sumathi S](https://www.linkedin.com/in/sumathisaravanan)

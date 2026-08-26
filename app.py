@@ -29,7 +29,8 @@ st.markdown(
     """
     <div class="sv-hero">
       <h1>SmartVision AI</h1>
-      <p>Intelligent multi-class object recognition — 25 COCO classes, four transfer-learning CNNs, and YOLOv8 detection.</p>
+      <p>Intelligent multi-class object recognition — 25 COCO classes, four transfer-learning CNNs, and YOLOv8 detection.<br>
+      Developed by <a href="https://www.linkedin.com/in/sumathisaravanan" style="color:#fff;text-decoration:underline;">Sumathi S</a></p>
     </div>
     """,
     unsafe_allow_html=True,
