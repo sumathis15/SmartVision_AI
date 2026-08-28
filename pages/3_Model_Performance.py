@@ -59,6 +59,9 @@ if clf:
         if "inference_ms" in numeric.columns and numeric["inference_ms"].notna().any():
             c2.bar_chart(numeric[["inference_ms"]])
         st.caption("Best model (from training report): **" + str(metrics.get("best_classification_model", "—")) + "**")
+        n_tests = {name: m.get("n_test") for name, m in clf.items() if m.get("n_test") is not None}
+        if len(set(n_tests.values())) > 1:
+            st.caption("Test set size: " + ", ".join(f"{k} n={v}" for k, v in n_tests.items()) + ".")
 else:
     st.info("No classification metrics yet.")
 

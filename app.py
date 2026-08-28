@@ -63,7 +63,7 @@ st.subheader("What this app does")
 a, b, c = st.columns(3)
 with a:
     st.markdown("**Image classification**")
-    st.write("Upload a close-up of one object. Compare VGG16, ResNet50, MobileNetV2, and EfficientNetB0, including an optional 4-model ensemble.")
+    st.write("Upload a close-up of one object. Compare VGG16, ResNet50, MobileNetV2, and EfficientNetB0 side by side.")
 with b:
     st.markdown("**Object detection**")
     st.write("Upload a full scene. YOLOv8 draws boxes, labels, and scores. Confidence is adjustable; CNN verification on crops is optional.")
@@ -75,7 +75,7 @@ st.subheader("How to use")
 st.markdown(
     """
 1. Open **Image Classification** or **Object Detection** in the sidebar.
-2. Upload a JPG/PNG (or use the webcam page).
+2. Upload a JPG/PNG.
 3. Read top-5 scores or inspect boxes. Raise the detection threshold if you see duplicates.
 4. Open **Model Performance** for the full comparison used in the report.
     """

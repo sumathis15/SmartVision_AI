@@ -20,10 +20,9 @@ Developed by [Sumathi S](https://www.linkedin.com/in/sumathisaravanan)
 
 ## Features
 
-- Image classification with four transfer-learning models and optional ensemble
+- Image classification with four transfer-learning models
 - YOLOv8 detection with bounding boxes, labels, and adjustable confidence
 - Performance dashboard (accuracy, F1, top-5, confusion matrices, mAP)
-- Optional webcam detection
 - Deployment-ready Streamlit layout for local use and Hugging Face Spaces
 
 ## 25 classes
@@ -37,13 +36,13 @@ person, bicycle, car, motorcycle, airplane, bus, truck, traffic light, stop sign
 | VGG16 | 66.9% | 0.669 | 91.2% | 27.6 | 254 MB |
 | ResNet50 | 76.5% | 0.764 | 93.6% | 28.6 | 173 MB |
 | MobileNetV2 | 68.5% | 0.685 | 92.0% | 46.7 | 28 MB |
-| EfficientNetB0 | 76.5% | 0.763 | 94.1% | 99.8 | 41 MB |
+| EfficientNetB0 | 80.7% | 0.80 | — | 99.8 | 41 MB |
 | YOLOv8m (val) | mAP@0.5 76.3% | mAP@0.5:0.95 56.6% | — | 31 FPS | 50 MB |
 | YOLOv8m (test) | mAP@0.5 75.8% | — | — | — | — |
 
 Per-class tables and plots: [`reports/metrics.json`](reports/metrics.json), [`reports/figures/`](reports/figures/).
 
-ResNet50 is used as the default classifier (same accuracy as EfficientNetB0, lower latency).
+EfficientNetB0 is the default classifier (highest test accuracy). ResNet50 is the faster alternative at 76.5%.
 
 ## Repository
 

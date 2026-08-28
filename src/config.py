@@ -44,8 +44,8 @@ IDX_TO_NAME = {i: name for i, name in enumerate(CLASS_NAMES)}
 HF_DATASET = "detection-datasets/coco"
 HF_SPLIT = "train"
 
-IMAGES_PER_CLASS = 100
-COLLECT_BUFFER = 120  # extra so tiny-bbox filtering can still leave 100
+IMAGES_PER_CLASS = 200
+COLLECT_BUFFER = 240  # extra so the quality crop filter can still leave 200
 RANDOM_SEED = 42
 
 # Splits

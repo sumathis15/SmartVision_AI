@@ -521,167 +521,169 @@
     },
     "EfficientNetB0": {
       "model": "efficientnetb0",
-      "accuracy": 0.7653333333333333,
-      "precision_macro": 0.77,
-      "recall_macro": 0.77,
-      "f1_macro": 0.7628462310412124,
-      "top5_accuracy": 0.9413333333333334,
+      "accuracy": 0.8066666666666666,
+      "precision_macro": 0.81,
+      "recall_macro": 0.81,
+      "f1_macro": 0.8,
+      "top5_accuracy": null,
       "inference_ms": 99.76388877333375,
       "model_size_mb": 41.201478,
-      "n_test": 375,
+      "n_test": 750,
+      "tta_hflip_accuracy": 0.816,
+      "eval_note": "Quality-crop held-out test (200 images/class, 70/15/15). Other CNNs remain on the original 375-image test split.",
       "per_class": {
         "person": {
-          "precision": 0.6111111111111112,
-          "recall": 0.7333333333333333,
-          "f1": 0.6666666666666666,
-          "support": 15
+          "precision": 0.71,
+          "recall": 0.8,
+          "f1": 0.75,
+          "support": 30
         },
         "bicycle": {
-          "precision": 0.55,
-          "recall": 0.7333333333333333,
-          "f1": 0.6285714285714286,
-          "support": 15
+          "precision": 0.78,
+          "recall": 0.83,
+          "f1": 0.81,
+          "support": 30
         },
         "car": {
-          "precision": 0.4375,
-          "recall": 0.4666666666666667,
-          "f1": 0.45161290322580644,
-          "support": 15
+          "precision": 0.72,
+          "recall": 0.7,
+          "f1": 0.71,
+          "support": 30
         },
         "motorcycle": {
-          "precision": 0.8461538461538461,
-          "recall": 0.7333333333333333,
-          "f1": 0.7857142857142857,
-          "support": 15
+          "precision": 0.85,
+          "recall": 0.73,
+          "f1": 0.79,
+          "support": 30
         },
         "airplane": {
-          "precision": 0.8461538461538461,
-          "recall": 0.7333333333333333,
-          "f1": 0.7857142857142857,
-          "support": 15
+          "precision": 0.94,
+          "recall": 0.97,
+          "f1": 0.95,
+          "support": 30
         },
         "bus": {
-          "precision": 0.75,
-          "recall": 0.8,
-          "f1": 0.7741935483870968,
-          "support": 15
+          "precision": 0.89,
+          "recall": 0.83,
+          "f1": 0.86,
+          "support": 30
         },
         "truck": {
-          "precision": 0.5555555555555556,
-          "recall": 0.3333333333333333,
-          "f1": 0.4166666666666667,
-          "support": 15
+          "precision": 0.73,
+          "recall": 0.8,
+          "f1": 0.76,
+          "support": 30
         },
         "traffic light": {
-          "precision": 0.6,
-          "recall": 0.6,
-          "f1": 0.6,
-          "support": 15
+          "precision": 0.94,
+          "recall": 0.97,
+          "f1": 0.95,
+          "support": 30
         },
         "stop sign": {
-          "precision": 0.8333333333333334,
-          "recall": 0.6666666666666666,
-          "f1": 0.7407407407407407,
-          "support": 15
+          "precision": 0.88,
+          "recall": 1.0,
+          "f1": 0.94,
+          "support": 30
         },
         "bench": {
-          "precision": 0.5714285714285714,
-          "recall": 0.8,
-          "f1": 0.6666666666666666,
-          "support": 15
+          "precision": 0.71,
+          "recall": 0.67,
+          "f1": 0.69,
+          "support": 30
         },
         "bird": {
-          "precision": 0.5625,
-          "recall": 0.6,
-          "f1": 0.5806451612903226,
-          "support": 15
+          "precision": 0.9,
+          "recall": 0.87,
+          "f1": 0.88,
+          "support": 30
         },
         "cat": {
-          "precision": 0.6363636363636364,
-          "recall": 0.9333333333333333,
-          "f1": 0.7567567567567568,
-          "support": 15
+          "precision": 0.73,
+          "recall": 0.73,
+          "f1": 0.73,
+          "support": 30
         },
         "dog": {
-          "precision": 0.6666666666666666,
-          "recall": 0.4,
-          "f1": 0.5,
-          "support": 15
+          "precision": 0.7,
+          "recall": 0.87,
+          "f1": 0.78,
+          "support": 30
         },
         "horse": {
-          "precision": 0.7333333333333333,
-          "recall": 0.7333333333333333,
-          "f1": 0.7333333333333333,
-          "support": 15
+          "precision": 0.93,
+          "recall": 0.93,
+          "f1": 0.93,
+          "support": 30
         },
         "cow": {
-          "precision": 0.8,
-          "recall": 0.8,
-          "f1": 0.8,
-          "support": 15
+          "precision": 0.81,
+          "recall": 0.87,
+          "f1": 0.84,
+          "support": 30
         },
         "elephant": {
-          "precision": 0.8125,
-          "recall": 0.8666666666666667,
-          "f1": 0.8387096774193549,
-          "support": 15
+          "precision": 0.91,
+          "recall": 0.97,
+          "f1": 0.94,
+          "support": 30
         },
         "bottle": {
-          "precision": 0.6428571428571429,
-          "recall": 0.6,
-          "f1": 0.6206896551724138,
-          "support": 15
+          "precision": 0.86,
+          "recall": 0.83,
+          "f1": 0.85,
+          "support": 30
         },
         "cup": {
-          "precision": 0.7,
-          "recall": 0.4666666666666667,
-          "f1": 0.56,
-          "support": 15
+          "precision": 0.72,
+          "recall": 0.77,
+          "f1": 0.74,
+          "support": 30
         },
         "bowl": {
-          "precision": 0.5,
-          "recall": 0.6,
-          "f1": 0.5454545454545454,
-          "support": 15
+          "precision": 0.71,
+          "recall": 0.83,
+          "f1": 0.77,
+          "support": 30
         },
         "pizza": {
-          "precision": 0.9375,
-          "recall": 1.0,
-          "f1": 0.967741935483871,
-          "support": 15
+          "precision": 0.93,
+          "recall": 0.9,
+          "f1": 0.92,
+          "support": 30
         },
         "cake": {
-          "precision": 0.7777777777777778,
-          "recall": 0.4666666666666667,
-          "f1": 0.5833333333333334,
-          "support": 15
+          "precision": 0.96,
+          "recall": 0.83,
+          "f1": 0.89,
+          "support": 30
         },
         "chair": {
-          "precision": 0.47058823529411764,
-          "recall": 0.5333333333333333,
-          "f1": 0.5,
-          "support": 15
+          "precision": 0.68,
+          "recall": 0.43,
+          "f1": 0.53,
+          "support": 30
         },
         "couch": {
-          "precision": 0.6153846153846154,
-          "recall": 0.5333333333333333,
-          "f1": 0.5714285714285714,
-          "support": 15
+          "precision": 0.55,
+          "recall": 0.57,
+          "f1": 0.56,
+          "support": 30
         },
         "potted plant": {
-          "precision": 0.6875,
-          "recall": 0.7333333333333333,
-          "f1": 0.7096774193548387,
-          "support": 15
+          "precision": 0.89,
+          "recall": 0.83,
+          "f1": 0.86,
+          "support": 30
         },
         "bed": {
-          "precision": 0.625,
-          "recall": 0.6666666666666666,
-          "f1": 0.6451612903225806,
-          "support": 15
+          "precision": 0.76,
+          "recall": 0.63,
+          "f1": 0.69,
+          "support": 30
         }
       }
     }
   },
-  "best_classification_model": "ResNet50"
+  "best_classification_model": "EfficientNetB0"
 }

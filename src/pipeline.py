@@ -1,4 +1,4 @@
-"""End-to-end inference: YOLO detection, optional CNN verification, drawing, ensemble."""
+"""End-to-end inference: YOLO detection, optional CNN verification, drawing."""
 
 from __future__ import annotations
 
@@ -92,48 +92,6 @@ def classify_all_models(
         except Exception as exc:  # noqa: BLE001 — surface any load/predict failure in the UI
             errors[name] = str(exc)
     return {"predictions": results, "errors": errors}
-
-
-def ensemble_predict(
-    image: Image.Image,
-    top_k: int = 5,
-    model_names: tuple[str, ...] | None = None,
-) -> dict:
-    """Average softmax across loaded CNNs; also report majority vote of top-1."""
-    names = model_names or ("VGG16", "ResNet50", "MobileNetV2", "EfficientNetB0")
-    probs = []
-    votes = []
-    used = []
-    for name in names:
-        if not keras_available(name):
-            continue
-        try:
-            model = load_keras_model(name)
-            p = model.predict(preprocess_for_keras(image), verbose=0)[0]
-            probs.append(p)
-            votes.append(int(np.argmax(p)))
-            used.append(name)
-        except Exception:
-            continue
-    if not probs:
-        return {"error": "No classification models available for ensemble."}
-    avg = np.mean(np.stack(probs, axis=0), axis=0)
-    top_idx = np.argsort(avg)[::-1][:top_k]
-    from collections import Counter
-
-    majority = Counter(votes).most_common(1)[0]
-    return {
-        "models_used": used,
-        "averaged": [
-            {"class": CLASS_NAMES[int(i)], "index": int(i), "confidence": float(avg[int(i)])}
-            for i in top_idx
-        ],
-        "majority_vote": {
-            "class": CLASS_NAMES[majority[0]],
-            "votes": int(majority[1]),
-            "of": len(used),
-        },
-    }
 
 
 def detect_objects(

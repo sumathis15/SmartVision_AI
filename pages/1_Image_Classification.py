@@ -1,4 +1,4 @@
-"""Page 2 — Image Classification (all 4 CNNs + ensemble)."""
+"""Page 2 — Image Classification (all 4 CNNs)."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ if str(ROOT) not in sys.path:
 import streamlit as st
 from PIL import Image, UnidentifiedImageError
 
-from src.pipeline import classify_all_models, ensemble_predict, keras_available
+from src.pipeline import classify_all_models, keras_available
 from src.ui import ALLOWED_IMAGE_TYPES, inject_css, load_metrics
 
 st.set_page_config(page_title="Classification | SmartVision AI", layout="wide")
@@ -55,7 +55,6 @@ uploaded = st.file_uploader(
     type=ALLOWED_IMAGE_TYPES,
     help="JPEG, PNG, WEBP, or BMP",
 )
-use_ensemble = st.checkbox("Show ensemble (averaged softmax + majority vote)", value=len(selected) >= 2)
 
 if not selected:
     st.warning("Select at least one model.")
@@ -106,17 +105,3 @@ with right:
             st.metric("Top-1", f"{top[0]['class']}", f"{top[0]['confidence']:.1%}")
             chart = {row["class"]: row["confidence"] for row in top}
             st.bar_chart(chart, height=220)
-
-if use_ensemble:
-    ens = ensemble_predict(image, top_k=5, model_names=tuple(selected))
-    if "error" in ens:
-        st.warning(ens["error"])
-    else:
-        st.subheader("Ensemble")
-        e1, e2 = st.columns(2)
-        avg0 = ens["averaged"][0]
-        e1.metric("Averaged softmax", avg0["class"], f"{avg0['confidence']:.1%}")
-        mv = ens["majority_vote"]
-        e2.metric("Majority vote", mv["class"], f"{mv['votes']}/{mv['of']} models")
-        st.caption("Models used: " + ", ".join(ens["models_used"]))
-        st.bar_chart({row["class"]: row["confidence"] for row in ens["averaged"]}, height=200)
