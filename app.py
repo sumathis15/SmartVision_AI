@@ -12,7 +12,7 @@ if str(ROOT) not in sys.path:
 import streamlit as st
 from PIL import Image
 
-from src.config import CLASS_NAMES, NUM_CLASSES
+from src.config import CLASS_NAMES, NUM_CLASSES, model_path
 from src.pipeline import sample_classification_images, yolo_available, keras_available
 from src.ui import inject_css, load_metrics, running_on_cloud
 
@@ -61,8 +61,9 @@ if placeholder or metrics is None:
 
 if running_on_cloud():
     st.info(
-        "This hosted app starts with the lighter CNNs. On **Image Classification**, "
-        "leave VGG16 unchecked unless you need it — it is the largest model and can restart the free instance."
+        "This hosted demo runs **EfficientNetB0 (TFLite)** and **YOLOv8 (ONNX)**. "
+        "VGG16, ResNet50, and MobileNetV2 need TensorFlow and run in the local app. "
+        "The Performance page still shows all trained metrics."
     )
 
 st.subheader("What this app does")
@@ -104,6 +105,11 @@ st.subheader("Model status")
 cols = st.columns(5)
 for col, name in zip(cols, ("VGG16", "ResNet50", "MobileNetV2", "EfficientNetB0")):
     col.write(f"**{name}**")
-    col.write("ready" if keras_available(name) else "weights missing")
+    if keras_available(name):
+        col.write("ready")
+    elif model_path(name).exists():
+        col.write("local Keras only")
+    else:
+        col.write("weights missing")
 cols[4].write("**YOLOv8**")
 cols[4].write("ready" if yolo_available() else "weights missing")

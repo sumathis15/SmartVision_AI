@@ -44,7 +44,7 @@ if not default_models:
     default_models = available
 
 if on_cloud:
-    st.caption("Cloud RAM is limited — MobileNetV2 and EfficientNetB0 are selected by default. Add VGG16 only if the app stays stable.")
+    st.caption("Hosted demo: EfficientNetB0 via TFLite. The other three CNNs need TensorFlow and are for local use.")
 
 selected = st.multiselect(
     "Models to run",

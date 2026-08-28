@@ -81,6 +81,8 @@ CLASSIFICATION_MODEL_FILES = {
     "EfficientNetB0": "efficientnetb0.keras",
 }
 YOLO_WEIGHTS = "yolov8_best.pt"
+YOLO_ONNX_WEIGHTS = "yolov8_best.onnx"
+TFLITE_WEIGHTS = "best_cnn_dynamic.tflite"
 
 # Training defaults (Colab T4-friendly)
 CLASSIFICATION_EPOCHS = 25
@@ -100,3 +102,11 @@ def model_path(name: str) -> Path:
 
 def yolo_path() -> Path:
     return MODELS_DIR / YOLO_WEIGHTS
+
+
+def yolo_onnx_path() -> Path:
+    return MODELS_DIR / YOLO_ONNX_WEIGHTS
+
+
+def tflite_path() -> Path:
+    return MODELS_DIR / TFLITE_WEIGHTS

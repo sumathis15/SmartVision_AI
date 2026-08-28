@@ -1,0 +1,10 @@
+# Full local / Colab stack (Keras CNNs + Ultralytics YOLO).
+-r requirements.txt
+tensorflow>=2.15.0,<2.17.0
+ultralytics>=8.2.0
+opencv-python-headless>=4.8.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+scikit-learn>=1.3.0
+datasets>=2.18.0
+tqdm>=4.66.0

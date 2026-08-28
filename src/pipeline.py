@@ -13,11 +13,13 @@ from src.config import (
     DEFAULT_CONFIDENCE,
     DEFAULT_IOU,
     IMAGE_SIZE,
-    MODELS_DIR,
     NAME_TO_IDX,
     NUM_CLASSES,
+    YOLO_IMAGE_SIZE,
     classification_split_dir,
     model_path,
+    tflite_path,
+    yolo_onnx_path,
     yolo_path,
 )
 from src.preprocess import ensure_rgb, resize_crop
@@ -28,6 +30,34 @@ def _font(size: int = 16):
         return ImageFont.truetype("arial.ttf", size)
     except OSError:
         return ImageFont.load_default()
+
+
+def _tensorflow_available() -> bool:
+    try:
+        import tensorflow  # noqa: F401
+        return True
+    except Exception:
+        return False
+
+
+def _ultralytics_available() -> bool:
+    try:
+        import ultralytics  # noqa: F401
+        return True
+    except Exception:
+        return False
+
+
+def keras_available(name: str) -> bool:
+    if model_path(name).exists() and _tensorflow_available():
+        return True
+    return name == "EfficientNetB0" and tflite_path().exists()
+
+
+def yolo_available() -> bool:
+    if yolo_path().exists() and _ultralytics_available():
+        return True
+    return yolo_onnx_path().exists()
 
 
 @lru_cache(maxsize=4)
@@ -41,21 +71,47 @@ def load_keras_model(name: str):
 
 
 @lru_cache(maxsize=1)
+def load_tflite_interpreter():
+    path = tflite_path()
+    if not path.exists():
+        raise FileNotFoundError(f"Missing TFLite weights: {path}")
+    try:
+        from ai_edge_litert.interpreter import Interpreter
+    except ImportError:
+        try:
+            from tflite_runtime.interpreter import Interpreter
+        except ImportError:
+            import tensorflow as tf
+
+            Interpreter = tf.lite.Interpreter
+    interpreter = Interpreter(model_path=str(path))
+    interpreter.allocate_tensors()
+    return interpreter
+
+
+@lru_cache(maxsize=1)
 def load_yolo_model():
     path = yolo_path()
-    if not path.exists():
-        raise FileNotFoundError(f"Missing YOLO weights: {path}")
-    from ultralytics import YOLO
+    if path.exists() and _ultralytics_available():
+        from ultralytics import YOLO
 
-    return YOLO(str(path))
+        return YOLO(str(path))
+    onnx = yolo_onnx_path()
+    if not onnx.exists():
+        raise FileNotFoundError(f"Missing YOLO weights: {path} or {onnx}")
+    import onnxruntime as ort
+
+    return ort.InferenceSession(str(onnx), providers=["CPUExecutionProvider"])
 
 
-def keras_available(name: str) -> bool:
-    return model_path(name).exists()
+@lru_cache(maxsize=1)
+def load_onnx_session():
+    onnx = yolo_onnx_path()
+    if not onnx.exists():
+        raise FileNotFoundError(f"Missing YOLO ONNX weights: {onnx}")
+    import onnxruntime as ort
 
-
-def yolo_available() -> bool:
-    return yolo_path().exists()
+    return ort.InferenceSession(str(onnx), providers=["CPUExecutionProvider"])
 
 
 def preprocess_for_keras(image: Image.Image) -> np.ndarray:
@@ -65,9 +121,27 @@ def preprocess_for_keras(image: Image.Image) -> np.ndarray:
     return np.expand_dims(arr, 0)
 
 
+def _tflite_predict(image: Image.Image) -> np.ndarray:
+    interpreter = load_tflite_interpreter()
+    inp = interpreter.get_input_details()[0]
+    out = interpreter.get_output_details()[0]
+    batch = preprocess_for_keras(image)
+    if inp["dtype"] == np.uint8:
+        batch = np.clip(batch, 0, 255).astype(np.uint8)
+    else:
+        batch = batch.astype(inp["dtype"])
+    interpreter.set_tensor(inp["index"], batch)
+    interpreter.invoke()
+    return np.asarray(interpreter.get_tensor(out["index"])[0], dtype=np.float32)
+
+
 def classify_image(image: Image.Image, model_name: str, top_k: int = 5) -> list[dict]:
-    model = load_keras_model(model_name)
-    preds = model.predict(preprocess_for_keras(image), verbose=0)[0]
+    if model_path(model_name).exists() and _tensorflow_available():
+        preds = load_keras_model(model_name).predict(preprocess_for_keras(image), verbose=0)[0]
+    elif model_name == "EfficientNetB0" and tflite_path().exists():
+        preds = _tflite_predict(image)
+    else:
+        raise FileNotFoundError(f"No runnable weights for {model_name}")
     top_idx = np.argsort(preds)[::-1][:top_k]
     return [
         {"class": CLASS_NAMES[int(i)], "index": int(i), "confidence": float(preds[int(i)])}
@@ -94,41 +168,133 @@ def classify_all_models(
     return {"predictions": results, "errors": errors}
 
 
+def _letterbox_yolo(image: Image.Image, size: int = YOLO_IMAGE_SIZE):
+    rgb = ensure_rgb(image)
+    w, h = rgb.size
+    scale = min(size / h, size / w)
+    nw, nh = int(round(w * scale)), int(round(h * scale))
+    resized = rgb.resize((nw, nh), Image.Resampling.BILINEAR)
+    canvas = Image.new("RGB", (size, size), (114, 114, 114))
+    pad_x = (size - nw) // 2
+    pad_y = (size - nh) // 2
+    canvas.paste(resized, (pad_x, pad_y))
+    return canvas, scale, pad_x, pad_y
+
+
+def _nms_xyxy(boxes: np.ndarray, scores: np.ndarray, iou_thres: float, max_det: int = 300) -> list[int]:
+    if boxes.size == 0:
+        return []
+    order = scores.argsort()[::-1]
+    keep: list[int] = []
+    while order.size and len(keep) < max_det:
+        i = int(order[0])
+        keep.append(i)
+        if order.size == 1:
+            break
+        rest = order[1:]
+        xx1 = np.maximum(boxes[i, 0], boxes[rest, 0])
+        yy1 = np.maximum(boxes[i, 1], boxes[rest, 1])
+        xx2 = np.minimum(boxes[i, 2], boxes[rest, 2])
+        yy2 = np.minimum(boxes[i, 3], boxes[rest, 3])
+        inter = np.maximum(0.0, xx2 - xx1) * np.maximum(0.0, yy2 - yy1)
+        area_i = (boxes[i, 2] - boxes[i, 0]) * (boxes[i, 3] - boxes[i, 1])
+        area_r = (boxes[rest, 2] - boxes[rest, 0]) * (boxes[rest, 3] - boxes[rest, 1])
+        iou = inter / (area_i + area_r - inter + 1e-6)
+        order = rest[iou <= iou_thres]
+    return keep
+
+
+def _detect_onnx(
+    image: Image.Image,
+    confidence: float,
+    iou: float,
+) -> list[dict]:
+    session = load_onnx_session()
+    canvas, scale, pad_x, pad_y = _letterbox_yolo(image)
+    arr = np.transpose(np.asarray(canvas, dtype=np.float32) / 255.0, (2, 0, 1))[None]
+    input_name = session.get_inputs()[0].name
+    raw = session.run(None, {input_name: arr})[0]
+    if raw.ndim != 3:
+        raise RuntimeError(f"Unexpected YOLO ONNX output shape: {raw.shape}")
+    if raw.shape[1] == 4 + NUM_CLASSES:
+        raw = np.transpose(raw, (0, 2, 1))
+    pred = raw[0]
+    xywh, logits = pred[:, :4], pred[:, 4:]
+    scores = logits.max(axis=1)
+    cls_ids = logits.argmax(axis=1)
+    keep_mask = scores >= confidence
+    xywh, scores, cls_ids = xywh[keep_mask], scores[keep_mask], cls_ids[keep_mask]
+    if xywh.size == 0:
+        return []
+    cx, cy, bw, bh = xywh.T
+    boxes = np.stack([cx - bw / 2, cy - bh / 2, cx + bw / 2, cy + bh / 2], axis=1)
+    orig_w, orig_h = ensure_rgb(image).size
+    boxes[:, [0, 2]] = (boxes[:, [0, 2]] - pad_x) / scale
+    boxes[:, [1, 3]] = (boxes[:, [1, 3]] - pad_y) / scale
+    boxes[:, [0, 2]] = boxes[:, [0, 2]].clip(0, orig_w)
+    boxes[:, [1, 3]] = boxes[:, [1, 3]].clip(0, orig_h)
+    keep_idx: list[int] = []
+    for cls in np.unique(cls_ids):
+        cls_mask = np.where(cls_ids == cls)[0]
+        kept = _nms_xyxy(boxes[cls_mask], scores[cls_mask], iou)
+        keep_idx.extend(cls_mask[k] for k in kept)
+    detections = []
+    for i in keep_idx:
+        cls_id = int(cls_ids[i])
+        if cls_id < 0 or cls_id >= NUM_CLASSES:
+            continue
+        x1, y1, x2, y2 = boxes[i]
+        if x2 - x1 < 1 or y2 - y1 < 1:
+            continue
+        detections.append(
+            {
+                "xyxy": [float(x1), float(y1), float(x2), float(y2)],
+                "class_id": cls_id,
+                "class": CLASS_NAMES[cls_id],
+                "confidence": float(scores[i]),
+            }
+        )
+    detections.sort(key=lambda d: d["confidence"], reverse=True)
+    return detections
+
+
 def detect_objects(
     image: Image.Image,
     confidence: float = DEFAULT_CONFIDENCE,
     iou: float = DEFAULT_IOU,
 ) -> list[dict]:
-    model = load_yolo_model()
-    rgb = ensure_rgb(image)
-    results = model.predict(
-        source=np.asarray(rgb),
-        conf=confidence,
-        iou=iou,
-        verbose=False,
-    )
-    detections = []
-    if not results:
-        return detections
-    r0 = results[0]
-    names = r0.names if hasattr(r0, "names") else {i: n for i, n in enumerate(CLASS_NAMES)}
-    boxes = r0.boxes
-    if boxes is None:
-        return detections
-    for box in boxes:
-        xyxy = box.xyxy[0].tolist()
-        cls_id = int(box.cls[0])
-        conf = float(box.conf[0])
-        label = names.get(cls_id, CLASS_NAMES[cls_id] if cls_id < NUM_CLASSES else str(cls_id))
-        detections.append(
-            {
-                "xyxy": [float(v) for v in xyxy],
-                "class_id": cls_id,
-                "class": label,
-                "confidence": conf,
-            }
+    if yolo_path().exists() and _ultralytics_available():
+        model = load_yolo_model()
+        rgb = ensure_rgb(image)
+        results = model.predict(
+            source=np.asarray(rgb),
+            conf=confidence,
+            iou=iou,
+            verbose=False,
         )
-    return detections
+        detections = []
+        if not results:
+            return detections
+        r0 = results[0]
+        names = r0.names if hasattr(r0, "names") else {i: n for i, n in enumerate(CLASS_NAMES)}
+        boxes = r0.boxes
+        if boxes is None:
+            return detections
+        for box in boxes:
+            xyxy = box.xyxy[0].tolist()
+            cls_id = int(box.cls[0])
+            conf = float(box.conf[0])
+            label = names.get(cls_id, CLASS_NAMES[cls_id] if cls_id < NUM_CLASSES else str(cls_id))
+            detections.append(
+                {
+                    "xyxy": [float(v) for v in xyxy],
+                    "class_id": cls_id,
+                    "class": label,
+                    "confidence": conf,
+                }
+            )
+        return detections
+    return _detect_onnx(image, confidence=confidence, iou=iou)
 
 
 def verify_crops_with_cnn(
@@ -214,3 +380,5 @@ def sample_classification_images(n_per_class: int = 1) -> list[tuple[str, Path]]
 def clear_model_cache():
     load_keras_model.cache_clear()
     load_yolo_model.cache_clear()
+    load_tflite_interpreter.cache_clear()
+    load_onnx_session.cache_clear()

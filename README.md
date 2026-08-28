@@ -63,7 +63,7 @@ Smart_Vision_AI/
 ```bash
 python -m venv .venv
 # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+pip install -r requirements-local.txt
 streamlit run app.py
 ```
 
@@ -80,10 +80,12 @@ Preprocessing is taken from the streamed subset (bbox format, crop-area cutoff, 
 
 ## Live demo (Streamlit Community Cloud)
 
+The hosted app uses **TFLite + ONNX** (no TensorFlow/PyTorch) so it can install on Streamlit Cloud.
+
 1. Open [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub.
 2. **Create app** → repository `sumathis15/SmartVision_AI`, branch `main`, main file `app.py`.
-3. Advanced: Python **3.11**. Deploy.
-4. On Classification, leave VGG16 unchecked if the app is slow or restarts (free RAM is limited).
+3. If an old failed app is stuck on `libglib2.0-0`, **delete it** and create a new one. Reboot alone often keeps the first failed log.
+4. Wait for pip to finish (several minutes). A good log will **not** mention `libglib2.0-0` or `packages.txt`.
 
 ## Hugging Face Spaces
 

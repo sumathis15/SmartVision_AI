@@ -1,18 +1,12 @@
-# Streamlit / Hugging Face Spaces
-streamlit>=1.32.0,<1.40.0
-tensorflow>=2.15.0,<2.17.0
-ultralytics>=8.2.0
-pillow>=10.0.0
+# Streamlit Community Cloud — keep this light.
+# TensorFlow and Ultralytics/PyTorch do not install on the Cloud default Python
+# (3.13/3.14) and will OOM the free 2.7 GB instance. The app runs EfficientNetB0
+# from TFLite and YOLOv8 from ONNX. For all four Keras CNNs locally, also install
+# requirements-local.txt.
+streamlit>=1.32.0
 numpy>=1.24.0
 pandas>=2.0.0
-matplotlib>=3.8.0
-seaborn>=0.13.0
-scikit-learn>=1.3.0
+pillow>=10.0.0
 pyyaml>=6.0.0
-
-# Dataset notebook (Colab also pip-installs these)
-datasets>=2.18.0
-tqdm>=4.66.0
-
-# Last so this wheel replaces ultralytics' opencv-python (needs GUI libs Streamlit Cloud cannot install)
-opencv-python-headless>=4.8.0
+onnxruntime>=1.17.0
+ai-edge-litert>=1.0.0
