@@ -3,7 +3,7 @@
 # (3.13/3.14) and will OOM the free 2.7 GB instance. The app runs EfficientNetB0
 # from TFLite and YOLOv8 from ONNX. For all four Keras CNNs locally, also install
 # requirements-local.txt.
-streamlit>=1.32.0
+streamlit>=1.36.0
 numpy>=1.24.0
 pandas>=2.0.0
 pillow>=10.0.0

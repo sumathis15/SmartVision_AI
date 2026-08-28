@@ -57,17 +57,7 @@ def inject_css():
             background: rgba(255,255,255,0.08);
         }}
         [data-testid="stSidebarNav"] a[aria-current="page"] {{
-            background: rgba(20, 143, 119, 0.35);
-        }}
-        /* Streamlit labels the entry file "app" — show Home instead. */
-        [data-testid="stSidebarNav"] li:nth-child(1) span {{
-            font-size: 0 !important;
-        }}
-        [data-testid="stSidebarNav"] li:nth-child(1) span::after {{
-            content: "Home";
-            font-size: 0.95rem !important;
-            font-weight: 600;
-            letter-spacing: 0.01em;
+            background: rgba(14, 124, 102, 0.40);
         }}
 
         .sv-hero {{
