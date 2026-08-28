@@ -70,7 +70,7 @@ d3.metric("Precision", "—" if yolo.get("precision") is None else f"{yolo['prec
 d4.metric("Recall", "—" if yolo.get("recall") is None else f"{yolo['recall']:.3f}")
 d5.metric("FPS", "—" if yolo.get("fps") is None else f"{yolo['fps']:.1f}")
 if yolo.get("meets_map50_floor") is True:
-    st.success("mAP@0.5 is above the 75% rubric floor.")
+    st.caption("Validation mAP@0.5 is above 0.75.")
 
 ap = yolo.get("per_class_ap50") or {}
 if ap:

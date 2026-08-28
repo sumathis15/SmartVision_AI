@@ -87,7 +87,7 @@ CLASSIFICATION_EPOCHS = 25
 CLASSIFICATION_BATCH = 32
 YOLO_EPOCHS = 50
 YOLO_BATCH = 16
-YOLO_MODEL = "yolov8s.pt"
+YOLO_MODEL = "yolov8m.pt"  # freeze-10 fine-tune used for the submitted detector
 
 
 def classification_split_dir(split: str) -> Path:

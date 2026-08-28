@@ -1,10 +1,11 @@
-Place trained weights here after Colab:
+Model weights (Git LFS).
 
-- vgg16.keras
-- resnet50.keras
-- mobilenetv2.keras
-- efficientnetb0.keras
-- yolov8_best.pt
-- best_cnn_dynamic.tflite (optional)
-
-Track them with Git LFS (see .gitattributes). Do not commit the raw smartvision_dataset folder.
+| File | Role |
+|---|---|
+| `vgg16.keras` | Image classification |
+| `resnet50.keras` | Image classification |
+| `mobilenetv2.keras` | Image classification |
+| `efficientnetb0.keras` | Image classification |
+| `yolov8_best.pt` | Object detection (YOLOv8m) |
+| `best_cnn_dynamic.tflite` | Quantized classifier (optional) |
+| `yolov8_best.onnx` | ONNX export (optional) |
