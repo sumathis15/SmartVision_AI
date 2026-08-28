@@ -103,7 +103,7 @@ with right:
         with col:
             st.subheader(name)
             if best == name:
-            st.caption("Highest test accuracy")
+                st.caption("Highest test accuracy")
             st.metric("Top-1", f"{top[0]['class']}", f"{top[0]['confidence']:.1%}")
             chart = {row["class"]: row["confidence"] for row in top}
             st.bar_chart(chart, height=220)
