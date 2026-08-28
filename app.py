@@ -16,18 +16,26 @@ classification = st.Page(
     "pages/1_Image_Classification.py",
     title="Image Classification",
     icon=":material/image_search:",
+    url_path="classification",
 )
 detection = st.Page(
     "pages/2_Object_Detection.py",
     title="Object Detection",
     icon=":material/center_focus_strong:",
+    url_path="detection",
 )
 performance = st.Page(
     "pages/3_Model_Performance.py",
     title="Model Performance",
     icon=":material/bar_chart:",
+    url_path="performance",
 )
-about = st.Page("pages/4_About.py", title="About", icon=":material/info:")
+about = st.Page(
+    "pages/4_About.py",
+    title="About",
+    icon=":material/info:",
+    url_path="about",
+)
 
 pg = st.navigation([home, classification, detection, performance, about])
 pg.run()
