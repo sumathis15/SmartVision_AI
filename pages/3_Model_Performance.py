@@ -16,6 +16,45 @@ from PIL import Image
 from src.config import CLASS_NAMES, FIGURES_DIR
 from src.ui import inject_css, load_metrics
 
+MODEL_ORDER = ("VGG16", "ResNet50", "MobileNetV2", "EfficientNetB0")
+
+
+def _grouped_score_chart(data: pd.DataFrame, model_order: list[str]) -> None:
+    import altair as alt
+
+    long = data.reset_index().melt("Model", var_name="Metric", value_name="Score")
+    chart = (
+        alt.Chart(long)
+        .mark_bar()
+        .encode(
+            x=alt.X("Model:N", sort=model_order, axis=alt.Axis(labelAngle=0, title=None, labelLimit=180)),
+            y=alt.Y("Score:Q", scale=alt.Scale(domain=[0, 1]), title=None),
+            color=alt.Color("Metric:N", legend=alt.Legend(orient="top")),
+            xOffset="Metric:N",
+            tooltip=["Model", "Metric", alt.Tooltip("Score:Q", format=".3f")],
+        )
+        .properties(height=280)
+    )
+    st.altair_chart(chart, use_container_width=True)
+
+
+def _single_bar_chart(data: pd.DataFrame, model_order: list[str], y_title: str) -> None:
+    import altair as alt
+
+    col = data.columns[0]
+    src = data.reset_index()
+    chart = (
+        alt.Chart(src)
+        .mark_bar()
+        .encode(
+            x=alt.X("Model:N", sort=model_order, axis=alt.Axis(labelAngle=0, title=None, labelLimit=180)),
+            y=alt.Y(f"{col}:Q", title=y_title),
+            tooltip=["Model", alt.Tooltip(f"{col}:Q", format=".1f")],
+        )
+        .properties(height=280)
+    )
+    st.altair_chart(chart, use_container_width=True)
+
 st.set_page_config(page_title="Model Performance | SmartVision AI", layout="wide")
 inject_css()
 st.title("Model Performance")
@@ -61,16 +100,29 @@ if clf:
             "model_size_mb": "Size (MB)",
         }
     )
-    st.dataframe(df.round(3), use_container_width=True)
+    model_order = [n for n in MODEL_ORDER if n in df.index]
+    df = df.reindex(model_order)
+    show = df.round(3).copy()
+    if "Top-5" in show.columns:
+        show["Top-5"] = df["Top-5"].map(lambda v: "—" if pd.isna(v) else f"{float(v):.3f}")
+    st.dataframe(show, use_container_width=True)
     if not placeholder:
-        c1, c2 = st.columns(2)
-        acc_cols = [c for c in ("Accuracy", "Macro F1", "Top-5") if c in df.columns]
         numeric = df.apply(pd.to_numeric, errors="coerce")
-        if acc_cols and numeric[acc_cols].notna().any().any():
-            c1.bar_chart(numeric[acc_cols])
-        if "Inference (ms)" in numeric.columns and numeric["Inference (ms)"].notna().any():
-            c2.bar_chart(numeric[["Inference (ms)"]])
+        c1, c2 = st.columns(2)
+        with c1:
+            st.caption("Accuracy vs Macro F1")
+            score_cols = [c for c in ("Accuracy", "Macro F1") if c in numeric.columns]
+            if score_cols:
+                _grouped_score_chart(numeric[score_cols], model_order)
+        with c2:
+            st.caption("Inference time")
+            if "Inference (ms)" in numeric.columns:
+                _single_bar_chart(numeric[["Inference (ms)"]], model_order, y_title="ms")
         st.caption("Best model (from training report): **" + str(metrics.get("best_classification_model", "—")) + "**")
+        if "Top-5" in numeric.columns:
+            missing = [n for n in model_order if pd.isna(numeric.loc[n, "Top-5"])]
+            if missing:
+                st.caption("Top-5 was not recorded for " + ", ".join(missing) + ".")
         n_tests = {name: m.get("n_test") for name, m in clf.items() if m.get("n_test") is not None}
         if len(set(n_tests.values())) > 1:
             st.caption("Test set size: " + ", ".join(f"{k} n={v}" for k, v in n_tests.items()) + ".")
