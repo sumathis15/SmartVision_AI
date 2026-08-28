@@ -56,7 +56,6 @@ Smart_Vision_AI/
 ├── models/                    # *.keras, yolov8_best.pt (Git LFS)
 ├── reports/                   # metrics.json, figures
 ├── requirements.txt
-└── packages.txt               # apt packages for Streamlit Cloud
 ```
 
 ## Run locally
