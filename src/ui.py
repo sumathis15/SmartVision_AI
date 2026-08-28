@@ -121,23 +121,46 @@ def inject_css():
             letter-spacing: 0.08em;
             text-transform: uppercase;
             color: #9db0c4 !important;
-            margin-bottom: 0.4rem;
+            margin: 0 0 0.45rem 0;
         }}
-        .sv-credit a {{
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
+        .sv-credit a.sv-credit-row,
+        .sv-credit .sv-credit-row {{
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+            white-space: nowrap !important;
             color: #ffffff !important;
             text-decoration: none !important;
             font-weight: 600;
             font-size: 0.92rem;
+            line-height: 1;
+        }}
+        .sv-credit p {{
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            margin: 0 !important;
+            white-space: nowrap !important;
         }}
         .sv-credit a:hover {{ text-decoration: underline !important; }}
         .sv-li {{
             width: 22px; height: 22px; border-radius: 4px;
             background: #fff;
-            display: inline-flex; align-items: center; justify-content: center;
+            display: inline-flex !important;
+            align-items: center; justify-content: center;
             flex-shrink: 0;
+        }}
+        .sv-li svg {{
+            display: block !important;
+            width: 14px !important;
+            height: 14px !important;
+        }}
+        .sv-credit-name {{
+            display: inline !important;
+            white-space: nowrap !important;
+            color: #ffffff !important;
         }}
 
         div[data-testid="stMetric"] {{
@@ -168,15 +191,12 @@ def _sidebar_credit():
     import streamlit as st
 
     st.sidebar.markdown(
-        f"""
-        <div class="sv-credit">
-          <span class="sv-credit-kicker">Developed by</span>
-          <a href="{LINKEDIN_URL}" target="_blank" rel="noopener noreferrer">
-            <span class="sv-li">{_LINKEDIN_ICON}</span>
-            {DEVELOPER_NAME}
-          </a>
-        </div>
-        """,
+        f'<div class="sv-credit">'
+        f'<span class="sv-credit-kicker">Developed by</span>'
+        f'<a class="sv-credit-row" href="{LINKEDIN_URL}" target="_blank" rel="noopener noreferrer">'
+        f'<span class="sv-li">{_LINKEDIN_ICON}</span>'
+        f'<span class="sv-credit-name">{DEVELOPER_NAME}</span>'
+        f"</a></div>",
         unsafe_allow_html=True,
     )
 
