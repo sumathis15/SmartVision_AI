@@ -1,0 +1,10 @@
+.venv/
+venv/
+__pycache__/
+.cursor/
+.git/
+*.pyc
+GUIDE.md
+SmartVision AI.md
+notebooks/
+.ipynb_checkpoints/

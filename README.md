@@ -3,10 +3,10 @@ title: SmartVision AI
 emoji: 👁️
 colorFrom: blue
 colorTo: green
-sdk: streamlit
-sdk_version: 1.39.0
-app_file: app.py
-python_version: "3.10"
+sdk: docker
+app_port: 8501
+tags:
+  - streamlit
 pinned: false
 ---
 
@@ -81,7 +81,7 @@ Preprocessing is taken from the streamed subset (bbox format, crop-area cutoff, 
 
 ## Hugging Face Spaces
 
-This README includes Streamlit Space YAML (`app_file: app.py`). Create a Space, attach this GitHub repo, and use CPU hardware. If memory is tight, disable VGG16 on the Classification page. `packages.txt` provides `libgl1` and `libglib2.0-0` for OpenCV.
+Hugging Face no longer lists Streamlit as an SDK. Create a **Docker** Space, attach this GitHub repo (`main`), and use CPU hardware. The `Dockerfile` starts Streamlit on port 8501. If memory is tight, on the Classification page run MobileNetV2 + EfficientNetB0 and skip VGG16.
 
 ## License / data
 
