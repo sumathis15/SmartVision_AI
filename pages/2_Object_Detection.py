@@ -83,10 +83,10 @@ with right:
     else:
         rows = []
         for d in dets:
-            row = {"class": d["class"], "confidence": round(d["confidence"], 3)}
+            row = {"Class": d["class"], "Confidence": round(d["confidence"], 3)}
             if verify:
-                row["cnn_class"] = d.get("cnn_class")
-                row["cnn_conf"] = None if d.get("cnn_confidence") is None else round(d["cnn_confidence"], 3)
-                row["agree"] = d.get("agree")
+                row["CNN class"] = d.get("cnn_class")
+                row["CNN confidence"] = None if d.get("cnn_confidence") is None else round(d["cnn_confidence"], 3)
+                row["Agree"] = d.get("agree")
             rows.append(row)
         st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)

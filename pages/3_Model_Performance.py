@@ -49,15 +49,27 @@ if clf:
             }
         )
     df = pd.DataFrame(rows).set_index("model")
+    df.index.name = "Model"
+    df = df.rename(
+        columns={
+            "accuracy": "Accuracy",
+            "precision_macro": "Precision",
+            "recall_macro": "Recall",
+            "f1_macro": "Macro F1",
+            "top5_accuracy": "Top-5",
+            "inference_ms": "Inference (ms)",
+            "model_size_mb": "Size (MB)",
+        }
+    )
     st.dataframe(df.round(3), use_container_width=True)
     if not placeholder:
         c1, c2 = st.columns(2)
-        acc_cols = [c for c in ("accuracy", "f1_macro", "top5_accuracy") if c in df.columns]
+        acc_cols = [c for c in ("Accuracy", "Macro F1", "Top-5") if c in df.columns]
         numeric = df.apply(pd.to_numeric, errors="coerce")
         if acc_cols and numeric[acc_cols].notna().any().any():
             c1.bar_chart(numeric[acc_cols])
-        if "inference_ms" in numeric.columns and numeric["inference_ms"].notna().any():
-            c2.bar_chart(numeric[["inference_ms"]])
+        if "Inference (ms)" in numeric.columns and numeric["Inference (ms)"].notna().any():
+            c2.bar_chart(numeric[["Inference (ms)"]])
         st.caption("Best model (from training report): **" + str(metrics.get("best_classification_model", "—")) + "**")
         n_tests = {name: m.get("n_test") for name, m in clf.items() if m.get("n_test") is not None}
         if len(set(n_tests.values())) > 1:
