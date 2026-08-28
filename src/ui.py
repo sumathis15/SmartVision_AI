@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -61,3 +62,12 @@ def read_image_bytes(uploaded) -> bytes | None:
 
 
 ALLOWED_IMAGE_TYPES = ["jpg", "jpeg", "png", "webp", "bmp"]
+
+
+def running_on_cloud() -> bool:
+    """Hugging Face Spaces or Streamlit Community Cloud (tight RAM)."""
+    if os.environ.get("SPACE_ID"):
+        return True
+    if os.path.exists("/mount/src"):
+        return True
+    return False

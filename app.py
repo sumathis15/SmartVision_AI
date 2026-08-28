@@ -14,7 +14,7 @@ from PIL import Image
 
 from src.config import CLASS_NAMES, NUM_CLASSES
 from src.pipeline import sample_classification_images, yolo_available, keras_available
-from src.ui import inject_css, load_metrics
+from src.ui import inject_css, load_metrics, running_on_cloud
 
 st.set_page_config(
     page_title="SmartVision AI",
@@ -59,6 +59,12 @@ if placeholder or metrics is None:
         unsafe_allow_html=True,
     )
 
+if running_on_cloud():
+    st.info(
+        "This hosted app starts with the lighter CNNs. On **Image Classification**, "
+        "leave VGG16 unchecked unless you need it — it is the largest model and can restart the free instance."
+    )
+
 st.subheader("What this app does")
 a, b, c = st.columns(3)
 with a:
@@ -92,7 +98,7 @@ if samples:
         with cols[i % 5]:
             st.image(Image.open(path), caption=name, use_container_width=True)
 else:
-    st.info("Sample crops appear here after `smartvision_dataset/classification/` is present (optional for the live Space).")
+    st.info("Sample crops appear here after `smartvision_dataset/classification/` is present (optional for the live app).")
 
 st.subheader("Model status")
 cols = st.columns(5)

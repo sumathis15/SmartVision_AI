@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 import sys
 from pathlib import Path
 
@@ -14,7 +13,7 @@ import streamlit as st
 from PIL import Image, UnidentifiedImageError
 
 from src.pipeline import classify_all_models, keras_available
-from src.ui import ALLOWED_IMAGE_TYPES, inject_css, load_metrics
+from src.ui import ALLOWED_IMAGE_TYPES, inject_css, load_metrics, running_on_cloud
 
 st.set_page_config(page_title="Classification | SmartVision AI", layout="wide")
 inject_css()
@@ -35,20 +34,23 @@ if not available:
     )
     st.stop()
 
-on_spaces = bool(os.environ.get("SPACE_ID"))
+on_cloud = running_on_cloud()
 default_models = (
-    [n for n in ("MobileNetV2", "EfficientNetB0", "ResNet50") if n in available]
-    if on_spaces
+    [n for n in ("MobileNetV2", "EfficientNetB0") if n in available]
+    if on_cloud
     else available
 )
 if not default_models:
     default_models = available
 
+if on_cloud:
+    st.caption("Cloud RAM is limited — MobileNetV2 and EfficientNetB0 are selected by default. Add VGG16 only if the app stays stable.")
+
 selected = st.multiselect(
     "Models to run",
     options=available,
     default=default_models,
-    help="On Hugging Face CPU Spaces, start with MobileNetV2 + EfficientNetB0 to stay under RAM limits. VGG16 is the largest.",
+    help="On Streamlit Cloud, start with MobileNetV2 + EfficientNetB0. VGG16 is the largest and can run out of memory.",
 )
 uploaded = st.file_uploader(
     "Upload an image",

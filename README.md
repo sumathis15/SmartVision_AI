@@ -79,9 +79,16 @@ Weights in `models/` and `reports/metrics.json` are included via Git LFS.
 
 Preprocessing is taken from the streamed subset (bbox format, crop-area cutoff, RGB conversion), not from generic COCO defaults.
 
+## Live demo (Streamlit Community Cloud)
+
+1. Open [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub.
+2. **Create app** → repository `sumathis15/SmartVision_AI`, branch `main`, main file `app.py`.
+3. Advanced: Python **3.11**. Deploy.
+4. On Classification, leave VGG16 unchecked if the app is slow or restarts (free RAM is limited).
+
 ## Hugging Face Spaces
 
-Hugging Face no longer lists Streamlit as an SDK. Create a **Docker** Space, attach this GitHub repo (`main`), and use CPU hardware. The `Dockerfile` starts Streamlit on port 8501. If memory is tight, on the Classification page run MobileNetV2 + EfficientNetB0 and skip VGG16.
+Hugging Face now requires a paid plan for Docker/Gradio Spaces. Static Spaces are free but cannot run this app. Use Streamlit Community Cloud for the live demo.
 
 ## License / data
 
