@@ -16,9 +16,9 @@ from PIL import Image
 from src.config import CLASS_NAMES, FIGURES_DIR
 from src.ui import inject_css, load_metrics
 
-st.set_page_config(page_title="Performance | SmartVision AI", layout="wide")
+st.set_page_config(page_title="Model Performance | SmartVision AI", layout="wide")
 inject_css()
-st.title("Model performance")
+st.title("Model Performance")
 
 metrics, placeholder = load_metrics()
 if metrics is None or placeholder:
@@ -65,7 +65,7 @@ if clf:
 else:
     st.info("No classification metrics yet.")
 
-st.subheader("Object detection (YOLOv8)")
+st.subheader("Object Detection (YOLOv8)")
 d1, d2, d3, d4, d5 = st.columns(5)
 d1.metric("mAP@0.5", "—" if yolo.get("map50") is None else f"{yolo['map50']:.3f}")
 d2.metric("mAP@0.5:0.95", "—" if yolo.get("map50_95") is None else f"{yolo['map50_95']:.3f}")
@@ -80,21 +80,26 @@ if ap:
     st.markdown("**Per-class AP@0.5**")
     st.bar_chart(pd.Series(ap).reindex(CLASS_NAMES))
 
-st.subheader("Confusion matrices")
-names = ["vgg16", "resnet50", "mobilenetv2", "efficientnetb0"]
+st.subheader("Confusion Matrices")
+names = [
+    ("vgg16", "VGG16"),
+    ("resnet50", "ResNet50"),
+    ("mobilenetv2", "MobileNetV2"),
+    ("efficientnetb0", "EfficientNetB0"),
+]
 cols = st.columns(2)
-for i, stem in enumerate(names):
+for i, (stem, label) in enumerate(names):
     path = FIGURES_DIR / f"cm_{stem}.png"
     with cols[i % 2]:
         if path.exists():
-            st.image(Image.open(path), caption=stem, use_container_width=True)
+            st.image(Image.open(path), caption=label, use_container_width=True)
         else:
-            st.caption(f"{stem}: figure not copied yet (`reports/figures/cm_{stem}.png`)")
+            st.caption(f"{label}: figure not copied yet (`reports/figures/cm_{stem}.png`)")
 
 cmp = FIGURES_DIR / "model_comparison.png"
 trade = FIGURES_DIR / "accuracy_speed_tradeoff.png"
 if cmp.exists() or trade.exists():
-    st.subheader("Comparison charts")
+    st.subheader("Comparison Charts")
     a, b = st.columns(2)
     if cmp.exists():
         a.image(str(cmp), use_container_width=True)
@@ -111,5 +116,5 @@ if best and best in clf and clf[best].get("per_class"):
 
 decisions = metrics.get("dataset_decisions") or {}
 if decisions:
-    st.subheader("Dataset filters (computed from this subset)")
+    st.subheader("Dataset Filters (computed from this subset)")
     st.json(decisions)

@@ -12,22 +12,22 @@ if str(ROOT) not in sys.path:
 import streamlit as st
 
 from src.config import CLASS_NAMES
-from src.ui import inject_css, load_metrics
+from src.ui import DEVELOPER_NAME, LINKEDIN_URL, inject_css, load_metrics
 
 st.set_page_config(page_title="About | SmartVision AI", layout="wide")
 inject_css()
 st.title("About SmartVision AI")
 
 st.markdown(
-    """
+    f"""
 SmartVision AI is a 25-class computer vision system on a curated COCO 2017 subset.
 It combines **transfer-learning image classification** (VGG16, ResNet50, MobileNetV2, EfficientNetB0)
-with **YOLOv8 multi-object detection**, served through this Streamlit app.
+with **YOLOv8 multi-object detection**, served through this Streamlit application.
 
 The dataset is streamed from Hugging Face (`detection-datasets/coco`). Class IDs, bbox format,
 and crop-area cutoffs are inspected from the stream rather than assumed.
 
-Developed by [Sumathi S](https://www.linkedin.com/in/sumathisaravanan)
+Developed by [{DEVELOPER_NAME}]({LINKEDIN_URL})
     """
 )
 
@@ -49,7 +49,7 @@ if metrics and not placeholder:
         st.markdown("**Filters computed on this subset**")
         st.json(dec)
 
-st.subheader("Model architectures")
+st.subheader("Model Architectures")
 st.markdown(
     """
 | Model | Role | Setup |
@@ -62,10 +62,10 @@ st.markdown(
     """
 )
 
-st.subheader("Technical stack")
+st.subheader("Technical Stack")
 st.markdown(
     """
 Python, TensorFlow / Keras, Ultralytics YOLOv8, OpenCV, Pillow, pandas, scikit-learn,
-Streamlit, Hugging Face Datasets / Spaces.
+Streamlit, Hugging Face Datasets. The hosted demo runs EfficientNetB0 via TFLite and YOLOv8 via ONNX.
     """
 )

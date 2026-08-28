@@ -23,13 +23,13 @@ from src.pipeline import (
 )
 from src.ui import ALLOWED_IMAGE_TYPES, inject_css, load_metrics
 
-st.set_page_config(page_title="Detection | SmartVision AI", layout="wide")
+st.set_page_config(page_title="Object Detection | SmartVision AI", layout="wide")
 inject_css()
-st.title("Object detection")
-st.caption("YOLOv8 localizes every in-scope object. NMS is applied inside Ultralytics; we filter by confidence.")
+st.title("Object Detection")
+st.caption("YOLOv8 localizes every in-scope object. Raise the confidence threshold if you see duplicate boxes.")
 
 if not yolo_available():
-    st.error("Missing `models/yolov8_best.pt`. Fine-tune YOLOv8 in the Colab notebook and copy the weights here.")
+    st.error("Missing YOLO weights (`models/yolov8_best.onnx` or `models/yolov8_best.pt`). Fine-tune YOLOv8 in the Colab notebook and copy the files here.")
     st.stop()
 
 metrics, _ = load_metrics()

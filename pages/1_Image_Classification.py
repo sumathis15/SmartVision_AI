@@ -15,10 +15,10 @@ from PIL import Image, UnidentifiedImageError
 from src.pipeline import classify_all_models, keras_available
 from src.ui import ALLOWED_IMAGE_TYPES, inject_css, load_metrics, running_on_cloud
 
-st.set_page_config(page_title="Classification | SmartVision AI", layout="wide")
+st.set_page_config(page_title="Image Classification | SmartVision AI", layout="wide")
 inject_css()
-st.title("Image classification")
-st.caption("Single-object crops work best (the models were trained on 224×224 boxed objects).")
+st.title("Image Classification")
+st.caption("Single-object crops work best. The models were trained on 224×224 boxed objects.")
 
 metrics, _ = load_metrics()
 best = None
@@ -50,7 +50,7 @@ selected = st.multiselect(
     "Models to run",
     options=available,
     default=default_models,
-    help="On Streamlit Cloud, start with MobileNetV2 + EfficientNetB0. VGG16 is the largest and can run out of memory.",
+    help="On Streamlit Cloud, EfficientNetB0 runs via TFLite. VGG16 needs TensorFlow locally.",
 )
 uploaded = st.file_uploader(
     "Upload an image",
@@ -93,7 +93,7 @@ if errors:
     for name, msg in errors.items():
         st.warning(f"{name}: {msg}")
 if not preds:
-    st.error("Every model failed to run. Check TensorFlow install and the weight files.")
+    st.error("Every model failed to run. Check the weight files and that TFLite or TensorFlow is installed.")
     st.stop()
 
 with right:
@@ -103,7 +103,7 @@ with right:
         with col:
             st.subheader(name)
             if best == name:
-                st.caption("Selected best (highest test accuracy)")
+            st.caption("Highest test accuracy")
             st.metric("Top-1", f"{top[0]['class']}", f"{top[0]['confidence']:.1%}")
             chart = {row["class"]: row["confidence"] for row in top}
             st.bar_chart(chart, height=220)
