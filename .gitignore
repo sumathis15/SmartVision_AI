@@ -16,3 +16,8 @@ catboost_info/
 
 # Local editor
 .cursor/
+
+# Private Colab scratch — not part of the public repo
+notebooks/05_efficientnet_80.ipynb
+notebooks/retrain_all_colab.ipynb
+GUIDE.md

@@ -50,7 +50,7 @@ ResNet50 is used as the default classifier (same accuracy as EfficientNetB0, low
 ```
 Smart_Vision_AI/
 ├── Smartvision.ipynb          # dataset stream, EDA, crops, YOLO labels
-├── notebooks/                 # CNN training, YOLO, comparison, exports
+├── notebooks/                 # 02 classification, 03 YOLO, 04 comparison
 ├── src/                       # shared config, models, pipeline
 ├── app.py                     # Streamlit home
 ├── pages/                     # Classification, Detection, Performance, Webcam, About
